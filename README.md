@@ -30,4 +30,5 @@ Já o material que criei durante a elaboração é oferecido de forma restrita a
 ## Sobre o Livro
 
 Detalhes e como adquirir
+
 https://ribamar.net.br/portal/livro/laravel9
