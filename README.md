@@ -1,4 +1,4 @@
-# Repositório do Livro Criação de aplicativos com laravel 9
+Livro Criação de aplicativos com laravel 9
 
 Todo o material que usei durante a elaboração do livro
 
