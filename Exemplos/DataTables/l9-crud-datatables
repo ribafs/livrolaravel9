@@ -1,0 +1,389 @@
+composer create-project --prefer-dist laravel/laravel l9-cruddt
+cd l9-cruddt
+
+Criar banco e conf .env
+
+composer require yajra/laravel-datatables-oracle
+
+nano config/app.php
+
+'providers' => [
+    
+   Yajra\Datatables\DatatablesServiceProvider::class,
+],
+ 
+ 'aliases' => [
+ 
+  'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+] 
+
+php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
+
+php artisan make:model Company -m
+
+public function up()
+{
+    Schema::create('companies', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email');
+        $table->string('address');
+        $table->timestamps();
+    });
+}
+
+php artisan migrate
+
+Rotas
+
+use App\Http\Controllers\CompanyCRUDController;
+
+Route::resource('companies', CompanyCRUDController::class);
+Route::post('delete-company', [CompanyCRUDController::class,'destroy']);
+
+php artisan make:controller CompanyCRUDController
+
+<?php
+namespace App\Http\Controllers;
+use App\Models\Company;
+use Illuminate\Http\Request;
+use Datatables;
+
+class CompanyCRUDController extends Controller
+{
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function index()
+    {
+        if(request()->ajax()) {
+            return datatables()->of(Company::select('*'))
+            ->addColumn('action', 'companies.action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+        return view('companies.index');
+    }
+    /**
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    public function create()
+    {
+        return view('companies.create');
+    }
+    /**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'address' => 'required'
+        ]);
+        $company = new Company;
+        $company->name = $request->name;
+        $company->email = $request->email;
+        $company->address = $request->address;
+        $company->save();
+        return redirect()->route('companies.index')
+        ->with('success','Company has been created successfully.');
+    }
+    /**
+    * Display the specified resource.
+    *
+    * @param  \App\company  $company
+    * @return \Illuminate\Http\Response
+    */
+    public function show(Company $company)
+    {
+        return view('companies.show',compact('company'));
+    } 
+    /**
+    * Show the form for editing the specified resource.
+    *
+    * @param  \App\Company  $company
+    * @return \Illuminate\Http\Response
+    */
+    public function edit(Company $company)
+    {
+        return view('companies.edit',compact('company'));
+    }
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \App\company  $company
+    * @return \Illuminate\Http\Response
+    */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'address' => 'required'
+        ]);
+        $company = Company::find($id);
+        $company->name = $request->name;
+        $company->email = $request->email;
+        $company->address = $request->address;
+        $company->save();
+        return redirect()->route('companies.index')
+        ->with('success','Company Has Been updated successfully');
+    }
+    /**
+    * Remove the specified resource from storage.
+    *
+    * @param  \App\Company  $company
+    * @return \Illuminate\Http\Response
+    */
+    public function destroy(Request $request)
+    {
+        $com = Company::where('id',$request->id)->delete();
+        return Response()->json($com);
+    }
+}
+
+
+Criar
+resources/views/companies
+
+index.blade.php
+create.blade.php
+edit.blade.php
+action.blade.php
+
+index.blade.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Laravel 9 DataTables CRUD Tutorial From Scratch - Tutsmake.com</title>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" >
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<link  href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+<div class="container mt-2">
+<div class="row">
+<div class="col-lg-12 margin-tb">
+<div class="pull-left">
+<h2>Laravel 9 CRUD using DataTables Tutorial</h2>
+</div>
+<div class="pull-right mb-2">
+<a class="btn btn-success" href="{{ route('companies.create') }}"> Create Company</a>
+</div>
+</div>
+</div>
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+<p>{{ $message }}</p>
+</div>
+@endif
+<div class="card-body">
+<table class="table table-bordered" id="datatable-crud">
+<thead>
+<tr>
+<th>Id</th>
+<th>Name</th>
+<th>Email</th>
+<th>Address</th>
+<th>Created at</th>
+<th>Action</th>
+</tr>
+</thead>
+</table>
+</div>
+</div>
+</body>
+<script type="text/javascript">
+$(document).ready( function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $('#datatable-crud').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('companies') }}",
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'name', name: 'name' },
+            { data: 'email', name: 'email' },
+            { data: 'address', name: 'address' },
+            { data: 'created_at', name: 'created_at' },
+            {data: 'action', name: 'action', orderable: false},
+        ],
+        order: [[0, 'desc']]
+    });
+    $('body').on('click', '.delete', function () {
+        if (confirm("Delete Record?") == true) {
+            var id = $(this).data('id');
+            // ajax
+            $.ajax({
+                type:"POST",
+                url: "{{ url('delete-company') }}",
+                data: { id: id},
+                dataType: 'json',
+                success: function(res){
+                    var oTable = $('#datatable-crud').dataTable();
+                    oTable.fnDraw(false);
+                }
+            });
+        }
+    });
+});
+</script>
+</html>
+
+create.blade.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Company Form - Laravel 9 Datatable CRUD</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" >
+</head>
+<body>
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-lg-12 margin-tb">
+                <div class="pull-left mb-2">
+                    <h2>Add Company</h2>
+                </div>
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{{ route('companies.index') }}"> Back</a>
+                </div>
+            </div>
+        </div>
+        @if(session('status'))
+        <div class="alert alert-success mb-1 mt-1">
+            {{ session('status') }}
+        </div>
+        @endif
+        <form action="{{ route('companies.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Name:</strong>
+                        <input type="text" name="name" class="form-control" placeholder="Company Name">
+                        @error('name')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Email:</strong>
+                        <input type="email" name="email" class="form-control" placeholder="Company Email">
+                        @error('email')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Address:</strong>
+                        <input type="text" name="address" class="form-control" placeholder="Company Address">
+                        @error('address')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary ml-3">Submit</button>
+            </div>
+        </form>
+    </body>
+    </html>
+
+edit.blade.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Company Form - Laravel 9 Datatable CRUD Tutorial</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" >
+</head>
+<body>
+    <div class="container mt-2">
+        <div class="row">
+            <div class="col-lg-12 margin-tb">
+                <div class="pull-left">
+                    <h2>Edit Company</h2>
+                </div>
+                <div class="pull-right">
+                    <a class="btn btn-primary" href="{{ route('companies.index') }}" enctype="multipart/form-data"> Back</a>
+                </div>
+            </div>
+        </div>
+        @if(session('status'))
+        <div class="alert alert-success mb-1 mt-1">
+            {{ session('status') }}
+        </div>
+        @endif
+        <form action="{{ route('companies.update',$company->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Name:</strong>
+                        <input type="text" name="name" value="{{ $company->name }}" class="form-control" placeholder="Company name">
+                        @error('name')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Email:</strong>
+                        <input type="email" name="email" class="form-control" placeholder="Company Email" value="{{ $company->email }}">
+                        @error('email')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Company Address:</strong>
+                        <input type="text" name="address" value="{{ $company->address }}" class="form-control" placeholder="Company Address">
+                        @error('address')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary ml-3">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+
+action.blade.php
+
+<a href="{{ route('companies.edit',$id) }}" data-toggle="tooltip" data-original-title="Edit" class="edit btn btn-success edit">Edit</a>
+<a href="javascript:void(0)" data-id="{{ $id }}" data-toggle="tooltip" data-original-title="Delete" class="delete btn btn-danger">Delete</a>
+
+
+php artisan serve
+
+http://127.0.0.1:8000/companies
+https://www.tutsmake.com/laravel-9-yajra-datatables-crud-example-tutorial/
+
+

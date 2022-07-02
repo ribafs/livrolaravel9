@@ -1,0 +1,97 @@
+Criando um fork de um projeto e efetuando traduções no mesmo
+
+crud-generator
+https://github.com/appzcoder/crud-generator
+
+Farei a tradução das views e efetuarei uma pequena correção nas index
+
+Esta é a estrutura do crud-generator
+
+config
+doc
+publish
+src
+tests
+composer.json
+LICENSE
+phpunit.xml.dist
+README.md
+.gitignore
+.travis.yml
+
+Aqui preciso editar apenas
+
+src
+  stubs
+    views
+      html
+
+create.blade.stub
+edit.blade.stub
+form.blade.stub
+index.blade.stub
+show.blade.stub
+
+Editei cada um e traduzi os termos do inglês para o português manualmente:
+
+Create New - Criar Novo
+Back - Voltar
+Edit - Editar
+Add New - Adicionar Novo
+Search... - Busca...
+Actions - Ações
+
+Entre outros
+
+Também aproveitei e corrigi um pequeno erro que já avisei ao autor há algum tempo, mas ele não corrigiu.
+
+Na view index.blade.stub
+
+Troquei
+<td>{{ $loop->iteration }}</td>
+
+Por
+<td>{{ $item->id }}</td>
+
+Agora usei um ótimo recurso que existe no gerenciador de arquivos nemo do Linux Mint 20.3. Quando abro o nemo e teclo Ctrl+F, ele me mostra acima duas caixas de texto, a de cima para localizar arquivos pelo nome e a de baixo para localizar em arquivos texto a existência de uma string.
+
+Abrir no diretório
+crud-generator-master
+
+E teclei Ctrl+F e na caixa de baixo entrei 
+appzcoder
+
+E troquei todos os encontrados por
+ribafs
+
+Quando encontrar
+Appzcoder
+
+Mudarei para
+Ribafs
+
+Ao final renomeei a pasta para
+crud-generator-laravel-br
+
+Criei o repositório no Github:
+crud-generator-laravel-br
+
+E enviei todo o conteúdo da pasta local para o repositório remoto.
+
+Então publiquei no Packagist.org
+
+E instalei no aplicativo estoque usando:
+
+https://github.com/ribafs/crud-generator-laravel-br
+
+composer require ribafs/crud-generator-laravel-br:*
+
+php artisan vendor:publish --provider="Ribafs\CrudGenerator\CrudGeneratorServiceProvider"
+
+E agora podemos criar os cruds assim:
+
+php artisan crud:generate Produtos --fields='descricao#string; estoque_minimo#integer; estoque_maximo#integer;' --view-path=admin --controller-namespace=App\\Http\\Controllers --route-group= --form-helper=html
+
+Mais informações
+https://github.com/ribafs/crud-generator-laravel-br/tree/main/doc#readme
+

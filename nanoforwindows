@@ -1,0 +1,10 @@
+https://sourceforge.net/projects/nano-for-windows/
+
+
+Instale o Bash no windows:
+
+Provavelmente o nano já vira instalado, se não, instale-o:
+
+$ sudo apt-get install nano
+
+

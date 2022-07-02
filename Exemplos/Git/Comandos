@@ -1,0 +1,47 @@
+Alguns comandos do Git
+
+git init
+Inicializar um repositório git. Ao executar esse comando, git cria um subdiretório .git que contém os arquivos necessários do novo repositório.
+
+git add
+Este comando possui diversas funções, como adicionar um arquivo em uma lista de arquivos a ser monitorado. Também funciona para salvar o estado de um arquivo que está sendo monitorado.
+
+git rm
+Remove um arquivo da lista de arquivos monitorados. Com o parâmetro --cached, o git somente para de monitorar o arquivo. Porém caso queira deletá-lo, execute o comando git rm sem o parâmetro --cached.
+
+git commit 
+Cria um ponto de referência com o estado atual de todos os arquivos. Digamos que os arquivos do projeto estão num momento onde seria importante salvá-los como estão. Para isso, executamos o commando git commit para criar um ponto de referência a fim de sermos capazes de consultar mais tarde todos os arquivos desejados. No comando de commit, executamos com o parâmetro -m para deixarmos uma mensagem para podermos identificar facilmente em que ponto estávamos. Com o comando git log, listamos todos os commits feitos.
+
+git status
+Exibe o status dos arquivos no repositório (não monitorados, modificados e não salvos, salvos e prontos para commit, etc). Usar após qualquer adição, exclusão ou alteração.
+
+git branch
+Cria ou muda de ramo de desenvolvimento. Também serve para listar todos os ramos existentes. Às vezes temos a necessidade de criar ramificações para organizar melhor o projeto. Um exemplo seria criar um ramo para desenvolver algum código que você não tem certeza se vai funcionar ou não. Para isto, usamos o comando git branch.
+
+Criar novo branch - git branch novo_branch
+Listar branches existentes - git branch ( a master ou main vem com um * a esquerda)
+Alternar entre branches - git checkout novo_branch
+
+No novo ramo, pode-se executar todos os comandos já conhecidos, adicionar arquivos, alterá-los, criar commits, etc. Digamos que as alterações nesse ramo não são importantes e não há a necessidade de salvá-los. Neste caso, basta excluir o ramo com o mesmo comando git branch com o parâmetro -d.
+git branch -d novo_branch
+
+Para salvar essas alterações e ainda adicionar no ramo principal master, usamos o comando git merge. Para simplificar o post, foi criado um arquivo teste2.txt e foi feito um commit no ramo novo_branch,  mas os comandos serão omitidos.
+git checkout master
+git merge novo_branch
+git log
+Primeiro, é necessário voltar ao ramo master e depois executar o comando merge.
+Depois do merge, podemos deletar sem problemas o ramo novo_branch que todas as alterações já estão contidas no ramo master.
+
+git checkout
+Muda de ramo ou ainda serve para ignorar modificações locais, entre outras funcionalidades.
+
+git push
+Envia as modificações para o repositório remoto.
+
+git pull
+Busca modificações do repositório remoto.
+
+git clone
+Copia um repositório remoto na máquina local.
+
+

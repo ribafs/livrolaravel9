@@ -1,0 +1,19 @@
+Basicamente é um sistema de controle de versões , também conhecido como SCM (Source Code Management) é um software que se encarrega de gerenciar as mudanças nos arquivos. Esses arquivos podem ser de qualquer tipo, scripts, documentos, planilhas, imagens, etc.
+
+Esse gerenciamento mantém todo o histórico de alterações em determinado arquivo ou pastas, quem fez tal mudança, quando esta foi feita e, idealmente, porque esta alteração foi implementada, entre outras funcionalidades associadas à segurança e organização de arquivos e suas versões.
+
+Com a evolução da tecnologia e das metodologias ágeis (como a cultura DevOps) é fundamental usar um SCM para todas as configurações e códigos que você irá produzir.
+
+O Git gerencia repositórios, e repositórios basicamente são pastas. Então você pode pegar qualquer pasta em seu computador que pode ter arquivos e subpastas e falar para o Git começar a gerenciar isso como se fosse um repositório. A vantagem de se fazer isso é que a partir do momento que você entrega essa pasta para o Git como repositório você terá a rastreabilidade de tudo que foi alterado. Chega dessa vida de criar versão de arquivo de configuração ou código criando uma cópia com outro nome.
+
+
+Instalação num linux Debian like
+
+sudo apt install git
+
+git --version
+
+Para trazer um repositório do Github para o desktop e baixar na pasta laravel9-livro
+
+git clone https://github.com/ribafs/laravel9-livro.git laravel9-livro
+

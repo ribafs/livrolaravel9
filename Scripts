@@ -1,0 +1,69 @@
+Melhorar o desempenho do trabalho com scripts
+
+Como uso o linux para trabalhar, então crio scripts no /usr/local/bin para que fiquem no path e eu possa executar de qualquer diretório.
+
+Exemplo:
+
+Criar um script que limpe a tela com apenas a letra c:
+
+sudo nano /usr/local/bin/c
+
+Conteúdo
+clear
+
+Depois tornar ele executável com
+
+sudo chmod +x /usr/local/bin/c
+
+
+Para facilitar a criação de scripts, eu criei dois scripts que me ajuda a criar com mais praticidade: ubin e umod
+
+sudo nano /usr/local/bin/ubin
+
+Conteúdo
+sudo nano /usr/local/bin/$1
+sudo chown +x /usr/local/bin/ubin
+
+Veja que ele recebe um parâmetro, que é o nome do script que ficará no /usr/local/bin
+
+sudo nano /usr/local/bin/umod
+
+Conteúdo
+sudo chmod +x /usr/local/bin/$1
+
+Agora para criar script eu faço isso:
+
+ubin c
+umod c
+
+
+Criando alguns scripts para ajudar a trabalhar com laravel
+
+ubin pas
+php artisan serve
+ubin pas
+
+ubin pam
+php artisan migrate
+umod pam
+
+ubin pad
+php artisan db:seed
+umod pad
+
+ubin pclear
+php artisan cache:clear
+php artisan view:clear
+umod pclear
+
+ubin pam2
+php artisan make:$1 $2
+umod pam2
+
+Usando:
+pam2 model Client
+pam2 controller ClientController
+
+No windows, uma alternativa é gravar no dicetório c:\windows
+No lugar de $1 usar %1 para receber parâmetro
+

@@ -1,0 +1,56 @@
+Resumo do Editor de textos nano para o terminal/modo texto
+
+nano arquivo_texto
+
+Ctrl+O ou F3 - salvar o arquivo
+
+Ctrl+X - sair do nano
+
+Ctrl+G - Help
+
+Mover o cursor na horizontal para a esquerda e para a direita - Ctrl+F e Ctrl+B
+
+Mover o cursor na vertical para cima e para baixo - Ctrl+P e Ctrl+N
+
+Também podemos usar as setas do teclado.
+
+Ctrl+W ou F6 - Procurar por parte do texto
+
+Alt+\ - para a primeira linha do texto
+
+Alt+/ - para a última linha
+
+F7 - uma tela acima
+
+F8 - uma tela abaixo
+
+Ctrl+K - apaga a linha atual, melhor, recorta para a memória
+
+Ctrl+U - cola o que está na memória. O conteúdo recortado por Ctrl+K
+
+Ctrl+6 - Inicia a seleção de um texto. Arraste até o final. 
+No final tecle Ctrl+K para recortar
+Mova o corsor para onde deseja colar e tecle Ctrl+U
+
+Para selecionar todo o arquivo
+
+Alt+\
+Ctrl+6
+Alt+/
+Alt+6 - copiar o texto selecionado
+Ctrl+U - colar
+
+Mostrar abaixo o número da linha num arquivo
+nano -c arquivo
+
+Ctrl+\ - Sobrescrever um trecho de texto/string
+
+Ctrl+J - justifica um parágrafo
+
+Ctrl+C - mostra abaixo a posição atual do cursor
+
+Ctrl+/ - mudar o cursor para uma linha e coluna. Ex: 10.0
+
+Ctrl+- - reduz o tamanho da fonte
+Ctrl+0 - volta a fonte ao tamanho normal. São atalhos do teclado e não do nano
+

@@ -1,0 +1,94 @@
+Sincronizar com um repositório no Github
+
+Criar o repositório: livro no Github. Não precisa criara o README.me, pois enviaremos o criado localmente.
+
+Enviar a chave do SSH do seu desktop para o Github
+
+Criando uma conta no Github
+
+https://github.com/
+
+Clique em Sign up e siga os passos.
+
+Após o cadastro precisa enviar a chave do SSH do seu desktop e cadastrar no Github
+
+Acesse o terminal e execute (precisa ter o SSH instalado e startado)
+
+cd ~/
+ssh-keygen -t rsa -b 4096 -C "ribafs@gmail.com"
+Enter
+Enter
+Enter
+
+cat ~/.ssh/id_rsa.pub
+
+Aparecerá algo como:
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDlGbrrL1rQ/Tehn+7aedUupOuVi2OWPtGwt8Tqh39NjGmBq8yq4D5sqE9E1uE16AGSdCE61iawYdyes84jcPvBMGZnCpPSHD8qg0dy2X1ZaWpihKZxToiNTL40V3Is0rUhgs/7pOkYRKvfTP4Je4j/6WheVpL7RK1NXTp20UNOHu27uw3HfmmIyaqNhGGtElCPGCjg04VwtbR0bWGL3RgiwsQ5zV5w4QNC9HTeH0tM+mybtXsdZP1YqZed3tZxuIIO1Wu1GZaKihx7lPK4OoWylOTF4tyhtlwjWXfjx36Y3tyL2yDmvfJWFoz3+4q2wtcU40s9iWjeMcgWorKA0Hx0g0x2/B/841s/fcCmxCIUVbNs5CCaAHXItaW375ug6Hn5aNARVlzBvz2qmiAxoLk2Zkyl42qZQiGQsXw9S7Dq3btaovmp39fZcszr7/kbgIVUByW3aPBmXsoJ5TvWl6Lbwqh6ZYJHRT7lVYGlsngParLsU+7Ymf4vNQnrbv0AHBxwKfQ9onsppn7bnOsjx7HA2XH5ySjtKEW/JTmPib+1Jyg/WwXtWQQogmKW4Sq5QB6NpcYbgHRWeLtk/ivs38kGC1rBMUCoFNUzqvoR0buaGkhGqSrXIjPXLfR98m9lRMSFgnFy4YDD/jp7eO66sk1nLnUAC2+CVrQ== ribafs@ribamt
+
+Então selecione por inteiro e copie para a memória.
+Volte ao Github, fça login e clique no seu avatar acima e à direita
+Settings (ou vá direto aqui: https://github.com/settings/keys)
+SSH and GPG Keys
+New SSH Key
+Digite um Title
+Clique abaixo em Key e cole a chave
+Então clique em Add SSH Key
+
+Agora está pronto para enviar código para seus repositórios no Github via Git.
+
+Acessar o repositório local existente ou criar um diretório e inicializar o git
+
+cd ~/livro
+git init
+Efetuar alterações, adicionar, remover...
+git add .
+git commit -m 'Update'
+git remote add origin git@github.com:ribafs/livro.git
+ou
+git remote add origin https://github.com/ribafs/livro.git
+git push origin master
+
+Veja que os nossos arquivos do repositório local agora estão no repositório do Github.
+
+
+.gitignore
+
+O GIT tem uma funcionalidade chamada .gitignore que nada mais é que um arquivo texto onde você pode colocar a lista de arquivos que você não quer controlar com o git ou enviar para o seu repositório remoto. Geralmente arquivos de logs, chaves são arquivos que você não vai querer em seu repositório remoto. Uma dica é usar o site https://www.gitignore.io para gerar seu arquivo .gitignore com base no objetivo de seu repositório.
+
+1- Crie um arquivo com um nome ficticio, no meu caso, criei o arquivo ‘keys.txt’
+touch keys.txt
+
+2- Crie em seu repositório o arquivo .gitignore com o conteúdo gerado no gitignore.io:
+# Created by https://www.toptal.com/developers/gitignore/api/git
+# Edit at https://www.toptal.com/developers/gitignore?templates=git
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+*.orig
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+### Key ###
+keys.txt
+# End of https://www.toptal.com/developers/gitignore/api/git
+
+Veja que no git status foi ignorado o arquivo que colocamos no .gitignore
+
+git status
+
+Agora adicione o .gitignore no stage e depois faça o commit e envie para o repositório remoto:
+git add --all
+git commit -m "Enviando gitignore"
+git status
+git push origin master
+
+git log
+
+

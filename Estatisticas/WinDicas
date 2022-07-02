@@ -1,0 +1,64 @@
+To complete this trick, just create a Command Prompt shortcut on the desktop, enter the shortcut's properties and then select the Run as administrator box, located in the Advanced button on the Shortcut tab. 
+
+Change the Prompt Text 
+ Did you know the prompt itself is completely customizable thanks to the prompt command? It is, and when we say customizable, we mean really customizable.
+
+Instead of C:\>, you can set the prompt to any text you want, have it include the time, the current drive, the Windows version number (like in this example image), you name it.
+
+One useful example is prompt $m$p$g, which will show the full path of a mapped drive, alongside the drive letter. 
+
+You can always execute prompt alone, without options, to return it to its sometimes boring default. 
+
+tree
+
+Customize the Command Prompt Title Bar Text 
+
+ Tired of that "Command Prompt" title bar text? No problem, just use the title command to change it to say whatever you like.
+
+For example, let's say your name is Maria Smith, and you want to express your ownership of the Command Prompt. Execute this and the title bar will change immediately:
+
+title Property of Maria Smith
+
+The change won't stick, so the next time you open Command Prompt, the title bar will be back to normal.
+
+The title command is usually used to help give a custom appearance in script files and batch files—not that titling it with your name isn't a good idea! 
+
+Open the Command Prompt From Any Location 
+
+
+Use Robocopy as a Backup Solution 
+ Thanks to the robocopy command, you don't need to use Window's backup software or install a free backup software tool.
+
+Just execute the following, obviously replacing the source and destination folders with whatever you'd like to back up and where it should go.
+
+robocopy c:\users\ellen\documents f:\mybackup\documents /copyall /e /r:0 /dcopy:t /mir
+
+The robocopy command with these options functions identically to an incremental backup software tool, keeping both locations in sync.
+
+You don't have this command if you're using Windows XP or earlier. However, you do have the xcopy command, which can be used to do something very similar:
+
+xcopy c:\users\ellen\documents f:\mybackup\documents /c /d /e /h /i /k /q /r /s /x /y
+
+No matter which command you choose to use, just create a batch file containing the command and schedule it to run in Task Scheduler, and you'll have your own custom-made backup solution. 
+
+
+ipconfig /all
+
+
+Automatically Complete Commands With Tab Completion 
+
+
+nslookup site.com
+
+
+https://www.lifewire.com/command-prompt-tricks-and-hacks-2618104
+
+
+No explorer, barra acima
+
+\\wsl2
+
+Mostra as distros instaladas
+
+
+

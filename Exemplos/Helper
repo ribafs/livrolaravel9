@@ -1,0 +1,374 @@
+Helper no Laravel 9
+
+Um helper, como criaremos aqui, é um arquivo com funções ou classes que ficam globais no aplicativo, podendo ser usadas em qualquer parte do código.
+
+Útil prar guardar aquelas funções que usamos com frequência.
+
+Como criar um helper
+
+E como chamar a função helper numa view, controller ou model
+
+Isso ajuda a não repetir código
+
+- Criar o arquivo helper.php
+- Adicionar seu path ao composer.json
+- Rodar o comando através do autoload
+
+Criar helpers.php
+
+nano app/helpers.php
+
+<?php
+  
+  function random_code(){
+ 
+    return rand(1111, 9999);
+  }
+ 
+ 
+  function allUpper($str){
+    return strtoupper($str);
+  }
+
+Adicionar ao composer.json
+
+"autoload": {
+    "psr-4": {
+        "App\\": "app/",
+        "Database\\Factories\\": "database/factories/",
+        "Database\\Seeders\\": "database/seeders/"
+    },
+       "files": [
+        "app/helpers.php"
+    ]
+},
+
+Executar
+
+composer du
+
+
+Como usar o helper
+
+Na view welcome.blade.php
+
+    <body class="antialiased">
+<h2><?php echo allUpper('I am from tutsmake.com') ?></h2>
+
+php artisan serve
+
+http://127.0.0.1:8000
+
+
+Testando num controller
+
+php artisan make:controller HelperController
+
+<?php
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class HelperController extends Controller
+{
+  public function index()
+  {   
+      $data = allUpper('Título');    
+      return view('welcome', compact('data'));
+  }
+}
+
+Router
+
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HelperController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/helper', [HelperController::class, 'index']);
+
+
+Na vieiw welcome.blade.php adicionei logo abaixo da <body>
+
+{{ $data }}
+
+php artisan serve
+
+http://127.0.0.1:8000/helper
+
+
+https://www.tutsmake.com/laravel-9-create-custom-helper-functions-example/ 
+
+
+Métodos disponíveis
+
+Available Methods
+
+Arrays & Objects
+
+Arr::accessible
+Arr::add
+Arr::collapse
+Arr::crossJoin
+Arr::divide
+Arr::dot
+Arr::except
+Arr::exists
+Arr::first
+Arr::flatten
+Arr::forget
+Arr::get
+Arr::has
+Arr::hasAny
+Arr::isAssoc
+Arr::isList
+Arr::keyBy
+Arr::last
+Arr::only
+Arr::pluck
+Arr::prepend
+Arr::pull
+Arr::query
+Arr::random
+Arr::set
+Arr::shuffle
+Arr::sort
+Arr::sortRecursive
+Arr::toCssClasses
+Arr::undot
+Arr::where
+Arr::whereNotNull
+Arr::wrap
+data_fill
+data_get
+data_set
+head
+last
+
+Paths
+
+app_path
+base_path
+config_path
+database_path
+lang_path
+mix
+public_path
+resource_path
+storage_path
+
+Strings
+
+__
+class_basename
+e
+preg_replace_array
+Str::after
+Str::afterLast
+Str::ascii
+Str::before
+Str::beforeLast
+Str::between
+Str::betweenFirst
+Str::camel
+Str::contains
+Str::containsAll
+Str::endsWith
+Str::excerpt
+Str::finish
+Str::headline
+Str::is
+Str::isAscii
+Str::isUuid
+Str::kebab
+Str::lcfirst
+Str::length
+Str::limit
+Str::lower
+Str::markdown
+Str::mask
+Str::orderedUuid
+Str::padBoth
+Str::padLeft
+Str::padRight
+Str::plural
+Str::pluralStudly
+Str::random
+Str::remove
+Str::replace
+Str::replaceArray
+Str::replaceFirst
+Str::replaceLast
+Str::reverse
+Str::singular
+Str::slug
+Str::snake
+Str::squish
+Str::start
+Str::startsWith
+Str::studly
+Str::substr
+Str::substrCount
+Str::substrReplace
+Str::swap
+Str::title
+Str::toHtmlString
+Str::ucfirst
+Str::ucsplit
+Str::upper
+Str::uuid
+Str::wordCount
+Str::words
+str
+trans
+trans_choice
+
+Fluent Strings
+
+after
+afterLast
+append
+ascii
+basename
+before
+beforeLast
+between
+betweenFirst
+camel
+contains
+containsAll
+dirname
+endsWith
+excerpt
+exactly
+explode
+finish
+is
+isAscii
+isEmpty
+isNotEmpty
+isUuid
+kebab
+lcfirst
+length
+limit
+lower
+ltrim
+markdown
+mask
+match
+matchAll
+newLine
+padBoth
+padLeft
+padRight
+pipe
+plural
+prepend
+remove
+replace
+replaceArray
+replaceFirst
+replaceLast
+replaceMatches
+rtrim
+scan
+singular
+slug
+snake
+split
+squish
+start
+startsWith
+studly
+substr
+substrReplace
+swap
+tap
+test
+title
+trim
+ucfirst
+ucsplit
+upper
+when
+whenContains
+whenContainsAll
+whenEmpty
+whenNotEmpty
+whenStartsWith
+whenEndsWith
+whenExactly
+whenIs
+whenIsAscii
+whenIsUuid
+whenTest
+wordCount
+words
+
+URLs
+
+action
+asset
+route
+secure_asset
+secure_url
+to_route
+url
+
+Miscellaneous
+
+abort
+abort_if
+abort_unless
+app
+auth
+back
+bcrypt
+blank
+broadcast
+cache
+class_uses_recursive
+collect
+config
+cookie
+csrf_field
+csrf_token
+decrypt
+dd
+dispatch
+dump
+encrypt
+env
+event
+filled
+info
+logger
+method_field
+now
+old
+optional
+policy
+redirect
+report
+request
+rescue
+resolve
+response
+retry
+session
+tap
+throw_if
+throw_unless
+today
+trait_uses_recursive
+transform
+validator
+value
+view
+with
+
+

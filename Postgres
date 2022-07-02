@@ -1,0 +1,52 @@
+Configurar o PostgreSQL para uso no desktop com Laravel
+
+sudo su
+su - postgres
+psql
+alter role postgres password 'postgres';
+exit
+exit
+
+sudo nano /etc/postgresql/12/main/pg_hba.conf
+
+Mudar o método de autenticação de peer para md5, na linha:
+local   all             postgres                                md5
+
+sudo service postgresql restart
+
+Agora podemos usar pelo adminer, pgadmin ou outro gerenciador com
+user - postgres
+senha - postgres
+
+Criar o banco via terminal
+
+sudo -u postgres -p postgres createdb livro
+
+Remover o banco
+sudo -u postgres -p postgres dropdb livro
+
+
+Criação de banco e user seu dono num servidor
+
+No caso para um site com Joomla
+
+user - joomla4_us
+banco - joomla4_db
+
+sudo -u postgres psql
+create database joomla4_db;
+create user joomla4_us with encrypted password 'zmxnxxxxJ@';
+grant all privileges on database joomla4_db to joomla4_us;
+
+Configurar a autenticação para md5
+
+sudo nano /etc/postgresql/13/main/pg_hba.conf
+
+local   all             postgres                                md5
+
+sudo service postgresql restart
+
+Referência
+https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
+
+

@@ -1,0 +1,73 @@
+
+Branches
+
+Git Branch – Local
+Até o momento fizemos alguns commits do nosso código de exemplo sem se preocupar muito se nossas alterações tem ou não conflito de código ou se tem mais gente mexendo no mesmo momento que a gente. Num termo mais técnico podemos dizer que todos os nossos commits foram feitos direto na Branch Master, com o comando "git push origin master".
+
+O que são Branchs?
+
+O GIT trabalha com um conceito de Branch para nos ajudar na organização e no fluxo de desenvolvimento como um todo.
+
+Quando queremos adicionar um novo recurso ou corrigir um bug em nosso código, independente do tamanho dessa alteração, o aconselhável é que você sempre crie uma branch para "isolar" aquela mudança até a mesma estar completamente desenvolvida e ai sim ser unido ao código principal através do merge na branch principal.
+
+Quando você cria uma nova branch é como se o GIT "clonasse" todo o conteúdo do seu repositório em um "compartimento" isolado para que você possa mexer com segurança sem "estragar" o seu código original.
+
+Manipulando Branchs no Git
+Vamos agora criar uma branch para entender como gerenciá-las.
+
+Exercício prático
+
+1- Antes de criar uma branch, liste as branches disponíveis em seu repositório:
+git branch
+
+Veja que só temos a Branch principal que o GIT nomeia de Master.
+
+2- Vamos criar uma nova Branch para fazer algumas mudanças em nosso repositório de forma segura protegendo nosso projeto principal:
+git branch slave
+git branch
+
+Veja que agora temos 2 branchs em nosso repositório onde a master aparece com um ASTERISCO e marcada com a cor VERDE, isso significa qual a Branch que está ativa nesse exato momento, ou seja, caso você faça uma alteração no código, estará aplicando essa alteração na branch master e a branch Slave que foi a que criamos.
+
+3- Nosso objetivo é novas alterações serem feitas na branch slave. Para isso precisamos selecionar a branch slave com o seguinte comando:
+git checkout slave
+git branch
+
+Vamos agora criar um novo arquivo em nosso repositório livro chamado 'example_branch.txt' com o conteúdo 'sample file' para testarmos esse fluxo de não mexer no código principal:
+
+nano example_branch.txt
+sample file
+
+Execute git status e repare na primeira linha da saída desse comando que ele mostra em qual Branch (ramo) essa alteração está sendo feita:
+git status
+
+Agora adicione o novo arquivo no próximo commit e realize o commit:
+git add --all
+git commit -m "Adicionando o Arquivo example_branch.txt"
+git status
+
+Execute o git log e repare que ele irá listar os commits referenciando a branch a qual eles pertencem:
+git log
+
+DICA: utilize o comando abaixo para exibir o log de forma simplificada
+git log --pretty=oneline --abbrev-commit
+
+Vamos alterar para a Branch Master e listar o diretório. Você verá que o arquivo example_branch.txt não estará na listagem, pois ele foi adicionado na Branch slave, ou seja, quando usamos branchs as mudanças ficam isoladas nas respectivas ramificações:
+git checkout master
+git branch
+git status
+ls
+
+
+Branch remoto
+
+É importante não esquecer de enviar suas alterações para garantir uma redundância do seu código no repositório remoto, caso aconteça algo em sua máquina, como também para garantir que todas as pessoas que possam estar trabalhando no mesmo repositório que você tenham a última versão das mudanças que você fez.
+
+Vamos selecionar a branch slave e fazer o envio das alterações para o nosso repositório remoto:
+git checkout slave
+git branch
+git push origin slave
+
+Com isso ele cria a branch slave no repositório remoto no GH, como pode constatar
+
+https://ironlinux.com.br/versionando-com-git/
+

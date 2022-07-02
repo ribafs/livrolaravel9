@@ -1,0 +1,541 @@
+Criar app
+
+laravel new dt
+cd dt
+
+Criar bd e conf .env
+
+Criar
+php artisan make:migration create_article_tbl –create=articles
+
+Editar
+
+        Schema::create('articles', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->timestamps();
+        });
+
+composer require yajra/laravel-datatables-oracle
+
+Configurar
+
+config/app.php
+
+Opcional para laravel >= 5.5
+
+'providers' => [
+    ...,
+    Yajra\DataTables\DataTablesServiceProvider::class,
+]
+ 
+'aliases' => [
+    ...,
+    'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+]
+
+Publicar
+php artisan vendor:publish --provider="Yajra\DataTables\DataTablesServiceProvider"
+
+Rotas
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArticleController;
+ 
+// Resource Route for article.
+Route::resource('articles', ArticleController::class);
+// Route for get articles for yajra post request.
+Route::get('get-articles', [ArticleController::class, 'getArticles'])->name('get-articles');
+
+Criar controller e model
+
+php artisan make:controller ArticleController --resource --model=Article
+
+Editar
+
+app/Http/Controllers/ArticleController.php
+
+<?php
+namespace App\Http\Controllers;
+ 
+use App\Models\Article;
+use Illuminate\Http\Request;
+ 
+class ArticleController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return view('articles.index');
+    }
+ 
+    /**
+     * Get the data for listing in yajra.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getArticles(Request $request, Article $article)
+    {
+        $data = $article->getData();
+        return \DataTables::of($data)
+            ->addColumn('Actions', function($data) {
+                return '<button type="button" class="btn btn-success btn-sm" id="getEditArticleData" data-id="'.$data->id.'">Edit</button>
+                    <button type="button" data-id="'.$data->id.'" data-toggle="modal" data-target="#DeleteArticleModal" class="btn btn-danger btn-sm" id="getDeleteId">Delete</button>';
+            })
+            ->rawColumns(['Actions'])
+            ->make(true);
+    }
+ 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, Article $article)
+    {
+        $validator = \Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+         
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+ 
+        $article->storeData($request->all());
+ 
+        return response()->json(['success'=>'Article added successfully']);
+    }
+ 
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Article  $article
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $article = new Article;
+        $data = $article->findData($id);
+ 
+        $html = '<div class="form-group">
+                    <label for="Title">Title:</label>
+                    <input type="text" class="form-control" name="title" id="editTitle" value="'.$data->title.'">
+                </div>
+                <div class="form-group">
+                    <label for="Name">Description:</label>
+                    <textarea class="form-control" name="description" id="editDescription">'.$data->description.'                       
+                    </textarea>
+                </div>';
+ 
+        return response()->json(['html'=>$html]);
+    }
+ 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Article  $article
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = \Validator::make($request->all(), [
+            'title' => 'required',
+            'description' => 'required',
+        ]);
+         
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+ 
+        $article = new Article;
+        $article->updateData($id, $request->all());
+ 
+        return response()->json(['success'=>'Article updated successfully']);
+    }
+ 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Article  $article
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $article = new Article;
+        $article->deleteData($id);
+ 
+        return response()->json(['success'=>'Article deleted successfully']);
+    }
+}
+
+Editar
+app/Models/Article.php
+
+<?php
+
+namespace App\Models;
+ 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+ 
+class Article extends Model
+{
+    use HasFactory;
+ 
+    protected $table = 'articles';
+    protected $guarded = array();
+ 
+    public function getData()
+    {
+        return static::orderBy('created_at','desc')->get();
+    }
+ 
+    public function storeData($input)
+    {
+        return static::create($input);
+    }
+ 
+    public function findData($id)
+    {
+        return static::find($id);
+    }
+ 
+    public function updateData($id, $input)
+    {
+        return static::find($id)->update($input);
+    }
+ 
+    public function deleteData($id)
+    {
+        return static::find($id)->delete();
+    }
+}
+
+Criar
+
+1) resources/views/articles/layout.blade.php
+2) resources/views/articles/index.blade.php
+
+articles/layout.blade.php
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel 9 Ajax CRUD Application</title>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    @yield('style')
+</head>
+<body>
+   
+<div class="container">
+    @yield('content')
+</div>
+@yield('script')
+</body>
+</html>
+
+resources/views/articles/index.blade.php
+
+@extends('articles.layout')
+ 
+@section('style')
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+@endsection
+ 
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        {{ __('Article Listing') }}
+                        <button style="float: right; font-weight: 900;" class="btn btn-info btn-sm" type="button"  data-toggle="modal" data-target="#CreateArticleModal">
+                            Create Article
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered datatable">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th width="150" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Create Article Modal -->
+<div class="modal" id="CreateArticleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Article Create</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                    <strong>Success!</strong>Article was added successfully.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" class="form-control" name="title" id="title">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" name="description" id="description">                        
+                    </textarea>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="SubmitCreateArticleForm">Create</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Edit Article Modal -->
+<div class="modal" id="EditArticleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Article Edit</h4>
+                <button type="button" class="close modelClose" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                    <strong>Success!</strong>Article was added successfully.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="EditArticleModalBody">
+                     
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="SubmitEditArticleForm">Update</button>
+                <button type="button" class="btn btn-danger modelClose" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- Delete Article Modal -->
+<div class="modal" id="DeleteArticleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Article Delete</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h4>Are you sure want to delete this Article?</h4>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="SubmitDeleteArticleForm">Yes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+ 
+@section('script')
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // init datatable.
+        var dataTable = $('.datatable').DataTable({
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            pageLength: 5,
+            // scrollX: true,
+            "order": [[ 0, "desc" ]],
+            ajax: '{{ route('get-articles') }}',
+            columns: [
+                {data: 'id', name: 'id'},
+                {data: 'title', name: 'title'},
+                {data: 'description', name: 'description'},
+                {data: 'Actions', name: 'Actions',orderable:false,serachable:false,sClass:'text-center'},
+            ]
+        });
+ 
+        // Create article Ajax request.
+        $('#SubmitCreateArticleForm').click(function(e) {
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('articles.store') }}",
+                method: 'post',
+                data: {
+                    title: $('#title').val(),
+                    description: $('#description').val(),
+                },
+                success: function(result) {
+                    if(result.errors) {
+                        $('.alert-danger').html('');
+                        $.each(result.errors, function(key, value) {
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+                        });
+                    } else {
+                        $('.alert-danger').hide();
+                        $('.alert-success').show();
+                        $('.datatable').DataTable().ajax.reload();
+                        setInterval(function(){ 
+                            $('.alert-success').hide();
+                            $('#CreateArticleModal').modal('hide');
+                            location.reload();
+                        }, 2000);
+                    }
+                }
+            });
+        });
+ 
+        // Get single article in EditModel
+        $('.modelClose').on('click', function(){
+            $('#EditArticleModal').hide();
+        });
+        var id;
+        $('body').on('click', '#getEditArticleData', function(e) {
+            // e.preventDefault();
+            $('.alert-danger').html('');
+            $('.alert-danger').hide();
+            id = $(this).data('id');
+            $.ajax({
+                url: "articles/"+id+"/edit",
+                method: 'GET',
+                // data: {
+                //     id: id,
+                // },
+                success: function(result) {
+                    console.log(result);
+                    $('#EditArticleModalBody').html(result.html);
+                    $('#EditArticleModal').show();
+                }
+            });
+        });
+ 
+        // Update article Ajax request.
+        $('#SubmitEditArticleForm').click(function(e) {
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "articles/"+id,
+                method: 'PUT',
+                data: {
+                    title: $('#editTitle').val(),
+                    description: $('#editDescription').val(),
+                },
+                success: function(result) {
+                    if(result.errors) {
+                        $('.alert-danger').html('');
+                        $.each(result.errors, function(key, value) {
+                            $('.alert-danger').show();
+                            $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+                        });
+                    } else {
+                        $('.alert-danger').hide();
+                        $('.alert-success').show();
+                        $('.datatable').DataTable().ajax.reload();
+                        setInterval(function(){ 
+                            $('.alert-success').hide();
+                            $('#EditArticleModal').hide();
+                        }, 2000);
+                    }
+                }
+            });
+        });
+ 
+        // Delete article Ajax request.
+        var deleteID;
+        $('body').on('click', '#getDeleteId', function(){
+            deleteID = $(this).data('id');
+        })
+        $('#SubmitDeleteArticleForm').click(function(e) {
+            e.preventDefault();
+            var id = deleteID;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "articles/"+id,
+                method: 'DELETE',
+                success: function(result) {
+                    setInterval(function(){ 
+                        $('.datatable').DataTable().ajax.reload();
+                        $('#DeleteArticleModal').hide();
+                    }, 1000);
+                }
+            });
+        });
+    });
+</script>
+@endsection
+
+
+
+  
+php artisan serve
+
+http://localhost:8000/articles
+
+https://onlinecode.org/laravel-9-ajax-crud-with-datatable/

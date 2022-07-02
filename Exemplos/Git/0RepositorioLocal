@@ -1,0 +1,232 @@
+Repositório Local
+
+Como o princípio do GIT é a rastreabilidade de tudo que foi alterado no código, a primeira coisa que iremos fazer é registrar na configuração é o Nome e Email que queremos que apareça ao fazer commit e que você usou para o cadastro no Github. Execute:
+
+git config --global user.name "Ribamar FS"
+git config --global user.email "ribafs@gmail.com"
+
+Testando se entramos os dados corretamente
+
+git config --list
+
+Vamos criar um repositório local para aprendizado do uso do git
+
+mkdir ~/livro
+cd ~/livro
+
+Para dizer ao git que queremos criar um repositório na pasta atual executamos:
+git init
+
+A pasta não tinha nenhum arquivo, mas veja agora:
+ls -la
+
+A pasta .git foi criada e guardará todos os arquivos do git.
+
+Vejamos algumas informações
+git status
+
+Ele nos informa que praticamente não fizemos nada em nosso repositório.
+
+Criemos o cartão de visitas de um repositório no GH:
+
+nano README.md
+
+Contendo:
+-- Primeiro Repositório Git --
+
+Salve com Ctrl+O e feche com Ctrl+X
+
+Execute novamente
+git status
+
+Ele nos diz que o arquivo README.md foi criado mas não está sendo monitorado pelo git e nos sugere executar git add ... para que seja monitorado. Também nos avosa que nenhum commit foi efetuado.
+
+Execute (observe o ponto na frente de add, ele indica todos, que também pode ser: git add --all)
+
+git add .
+git status
+
+Observe que agora o nome do arquivo mudou de vermelho para verde e ele nos diz que existem mudanças prontas para submeter.
+
+Para realizar um commit é ideal e boa prática sempre redigir uma mensagem que irá dizer o que o seu commit está fazendo no código/ repositório. Como por exemplo: "Corrigindo a vulnerabilidade X", "Adicionando a Feature Z", etc. Em nosso caso estamos criando o arquivo README.md:
+
+Execute
+git commit -m "Criando o arquivo Readme"
+
+Veja o histórico de versões do seu repositório:
+git log
+
+ou para mais detalhamento:
+git log -p
+
+Entregando o controle para o Git
+
+Vamos fazer algumas atividades dentro do nosso repositório local para aprender um pouco mais sobre o gerenciamento do GIT. A ideia é você entender que quando uma pasta (repositório) está sendo controlada pelo GIT você não pode tratá-la simplesmente como uma pasta que tem arquivos e subpastas. Toda alteração no repositório precisará sempre informar ao GIT o que você espera que aconteça com essa alteração.
+
+Primeiro edite o arquivo README.md e ADICIONE ao final do arquivo todos os comandos que você já aprendeu de git sendo um em cada linha. Estamos aqui simulando alterações em arquivos.
+
+nano README.md
+
+-- Primeiro Repositório Git --
+Comandos já aprendidos:
+git init
+git status
+git config
+git add --all
+git commit -m
+git log
+git log -p
+
+Salve e fecha
+
+Execute
+git status
+
+Observe que ele alerta que o arquivo README.md foi alterado.
+
+Veja
+cat README.md
+
+Desfazendo alterações antes de serem comitadas
+
+Vamos imaginar que essa alteração foi indevida ou feita de forma errada, você pode desfazer antes de adicionar ao próximo commit executando o comando abaixo:
+git checkout -- README.md
+
+cat README.md
+
+git status
+
+Veja que todas as alterações foram desconsideradas e o repositório não tem alterações pendentes para o próximo commit. Aposto que neste ponto você já está se perguntando porque não utilizava isso antes, não?
+
+Adicione novamente o conteúdo que haviamos adicionaao ao README.md
+
+-- Primeiro Repositório Git --
+Comandos já aprendidos:
+git init
+git status
+git config
+git add --all
+git commit -m
+git log
+git log -p
+
+Salve e fecha
+
+git status
+
+cat README.md
+
+Vamos criar um novo arquivo chamado example.txt em nosso repositório e ver o status:
+touch example.txt
+git status
+
+Veja que o GIT identificou que o README.md foi alterado e um novo arquivo foi adicionado ao repositório que ele ainda não está monitorando.
+
+Adicionar as alterações e ver o status:
+
+git add --all
+git status
+
+Tente executar o comando para desfazer as alterações do README.md novamente:
+git checkout -- README.md
+cat README.md
+
+Veja que não conseguiu reverter, pois o arquivo já havia sido adicionado ao pŕoximo commit.
+
+Como desfazer alterações após o git add?
+
+E agora, como desfazer uma operação depois que foi dado o "git add"?
+
+Primeiro precisamos retirar ele do próximo commit com o reset:
+git reset HEAD README.md
+git status
+
+Agora vamos fazer o checkout e ver as mudanças que foram feitas:
+git checkout -- README.md
+
+cat README.md
+
+Veja que o arquivo está sem os comandos do Git novamente e ao executar status ele nem considera mais o README.md, pois nada foi alterado desde o último commit.
+
+git status
+
+Refaça a inserção do conteúdo no README.md novamente
+
+-- Primeiro Repositório Git --
+Comandos já aprendidos:
+git init
+git status
+git config
+git add --all
+git commit -m
+git log
+git log -p
+
+Salve e fecha
+
+cat README.md
+
+git status
+
+Vamos enviar tudo para o próximo commit:
+git add --all
+git status
+
+Vamos executar o commit e ver o status e o log:
+git commit -m "Atualização do README e envio Example.txt"
+git status
+git log
+
+
+Desfazendo alterações após o commit
+
+E se você quiser desfazer a alteração depois de ter commitado? Bom, o primeiro passo será desfazer o commit (veja que o último log foi retirado):
+git reset --soft HEAD~1
+git log
+
+Depois retiramos o README.md da área de Staging:
+git reset HEAD README.md
+git status
+
+Por último remova a alteração feita no arquivo e veja o status:
+git checkout -- README.md
+cat README.md
+git status
+
+Veja que demos rollback no README.md porém o arquivo example.txt continua na lista para ser aplicado no próximo commit. Retorne as alterações no arquivo README.md, adicione as alterações, faça o commit com a mesma mensagem do commit anterior, ou seja, refaça os últimos itens.
+
+-- Primeiro Repositório Git --
+Comandos já aprendidos:
+git init
+git status
+git config
+git add --all
+git commit -m
+git log
+git log -p
+
+cat README.md
+
+git add --all
+git commit -m "Atualização do README e envio Example.txt"
+git log
+
+Aprendemos que para fazer alterações em nosso repositório sempre vamos precisar rodar o comando "git add" e depois finalizar com um "git commit" se quisermos de fato controlar as versões de nossas alterações. Em contrapartida também vimos que para desfazer uma ação dentro de nosso repositório existem passos diferentes dependendo do status do nosso repositório:
+
+Se quisermos desfazer as alterações em um arquivo antes de adicionar o mesmo na área de Stage para o próximo commit:
+git checkout -- README.md
+
+Se já tivermos adicionado as alterações na área de Stage:
+git reset HEAD README.md
+git checkout -- README.md
+Se já tivermos feito o commit:
+git reset --soft HEAD~1
+git reset HEAD README.md
+git checkout -- README.md
+
+Esses foram rollbacks seguros, onde você sabe exatamente o que está desfazendo e por etapa.
+Existe uma opção mais agressiva caso você tenha certeza que quer desfazer todas as alterações do último commit:
+git reset --hard HEAD~1
+
+Se executar esse comando, verá que além de desfazer as alterações do README o arquivo example.txt também é apagado.
+
