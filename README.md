@@ -27,3 +27,7 @@ Já o material que criei durante a elaboração é oferecido de forma restrita a
 - Scripts - Criação de scripts no Linux
 - simple-bootstrap-5-dashboard.zip - Pequeno dashboard usando o Bootstrap 5
 
+## Sobre o Livro
+
+Detalhes e como adquirir
+https://ribamar.net.br/portal/livro/laravel9
