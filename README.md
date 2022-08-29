@@ -34,6 +34,3 @@ Já o material que criei durante a elaboração é oferecido de forma restrita a
 Custa R$ 30,00 
 
 Para adquirir entre em contato via ribafs@gmail.com
-
-
-https://ribamar.net.br/portal/livro/laravel9
