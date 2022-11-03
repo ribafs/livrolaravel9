@@ -31,6 +31,4 @@ Já o material que criei durante a elaboração é oferecido de forma restrita a
 
 [Indice do Livro](indice.pdf)
 
-Custa R$ 30,00 
-
-Para adquirir entre em contato via ribafs@gmail.com
+Caso esteja interessado entre em contato pelo ribafs@gmail.com
